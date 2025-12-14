@@ -32,8 +32,8 @@ Asegúrate de tener **FFmpeg instalado** en tu sistema y accesible desde la term
 1. Clonar el repositorio:
 
 ```bash
-git clone <repo_url>
-cd <repo_folder>
+git clone https://github.com/ZibraMax/microcassette_workflow
+cd microcassette_workflow
 ```
 
 2. Crear un entorno virtual (opcional pero recomendado):
