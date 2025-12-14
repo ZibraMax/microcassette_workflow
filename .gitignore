@@ -44,3 +44,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+
+# Resultados de la transcripción
+Transcripcion_*/
