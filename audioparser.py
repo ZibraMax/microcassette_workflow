@@ -12,9 +12,9 @@ import tempfile
 import unicodedata
 import threading
 STOP_PHRASES = [
-    "fin del dia",       # principal
+    "fin del dia",
     "finalizar grabacion",
-    "stop recording",    # en inglés, útil si alguien lo dice
+    "stop recording",
     "end of day",
     "grabar terminado",
     "listo el pollo",
@@ -74,8 +74,6 @@ def wav_to_mp3(wav_path, mp3_path):
 
 
 def record_until_phrase(filename):
-    print("Presiona ENTER para empezar a grabar...")
-    input()
     print("🎙️ Grabando... Presiona ENTER para detener.")
 
     recorded_audio = []
@@ -190,7 +188,7 @@ def transcribe_audio(audio_path, output_txt="transcription.txt", model_size="bas
 
 
 if __name__ == "__main__":
-    KEYNAME = "BEHRINGER"
+    KEYNAME = ""
     lista = sd.query_devices()
     DEVICE_ID = None
     possible_idexes = []
@@ -214,6 +212,12 @@ if __name__ == "__main__":
             f"Se encontraron multiples dispositivos que coinciden con '{KEYNAME}': {possible_idexes}")
         for idx in possible_idexes:
             try:
+                res = input(
+                    f"\nPresiona ENTER para probar el dispositivo ID {idx} {names[idx]} presiona s para ir al siguiente o el numero del dispositivo que corresponda: ")
+                if res.lower() == 's':
+                    continue
+                if res.isdigit():
+                    idx = int(res)
 
                 sd.default.device = (idx, None)
                 print(
