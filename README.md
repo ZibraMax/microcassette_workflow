@@ -1,82 +1,106 @@
-# Microcassette Workflow — Transcripción de audio a texto
+# Audio Recorder & Transcriber with Phrase Detection
 
-Proyecto para digitalizar y transcribir audios procedentes de microcassettes a texto utilizando Python y herramientas de reconocimiento de voz.
+Este proyecto es un **script de grabación de audio** avanzado en Python que permite:
 
-## Descripción
+-   Grabar desde un micrófono seleccionado automáticamente por nombre.
+-   Mostrar un **medidor de volumen en tiempo real** mientras se graba.
+-   Detener la grabación automáticamente al escuchar una **frase clave** (“FIN DEL DIA”) o al presionar **ENTER**.
+-   Reproducir un **beep de confirmación** cuando se detiene la grabación.
+-   Guardar el audio final en **MP3**.
+-   Generar una **transcripción completa** usando el modelo Whisper de OpenAI.
 
-Este repositorio contiene utilidades y scripts para:
+---
 
--   Pasar audios grabados en microcassette a archivos de audio digitales.
--   Preprocesar (limpieza, normalización) esos audios.
--   Transcribir el audio a texto usando modelos de reconocimiento de voz (offline u online según la configuración).
+## 🛠️ Requisitos
 
-## Características
+Python >= 3.10 y las siguientes librerías:
 
--   Flujo de trabajo sencillo para preparar y transcribir audios.
--   Soporte para pasos de preprocesado (reducción de ruido, normalización de volumen).
--   Salida en texto plano para integración con otros sistemas.
-
-## Requisitos
-
--   Python 3.8+
--   Dependencias listadas en `requirements.txt` (instalar con pip).
--   Software opcional: herramientas de edición de audio (por ejemplo, Audacity) para digitalizar cintas si aún no están en formato digital.
-
-## Instalación
-
-1. Crear y activar un entorno virtual (recomendado):
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+```
+sounddevice
+numpy
+scipy
+ffmpeg-python
+whisper
 ```
 
-2. Instalar dependencias:
+Asegúrate de tener **FFmpeg instalado** en tu sistema y accesible desde la terminal.
+
+---
+
+## 📦 Instalación
+
+1. Clonar el repositorio:
+
+```bash
+git clone <repo_url>
+cd <repo_folder>
+```
+
+2. Crear un entorno virtual (opcional pero recomendado):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Linux/Mac
+.venv\Scripts\activate     # Windows
+```
+
+3. Instalar dependencias:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Uso
+---
 
-El repositorio incluye el archivo `script.py` como punto de partida. Dependiendo de tu flujo, los pasos típicos son:
+## ⚙️ Uso
 
-1. Obtener archivos de audio digitalizados desde la cinta (WAV/FLAC/MP3).
-2. Ejecutar el script de preprocesado (si existe) para normalizar y limpiar el audio.
-3. Ejecutar el script de transcripción.
-
-Ejemplo genérico:
+1. Ejecuta el script principal:
 
 ```bash
-python script.py --input path/to/audio.wav --output transcripcion.txt
+python main.py
 ```
 
-Nota: `script.py` puede requerir argumentos distintos según la implementación. Revisa su cabecera o ejecuta `python script.py --help`.
+2. Selecciona el micrófono **si coincide con KEYNAME** (por ejemplo `"BEHRINGER"`).
+3. Presiona **ENTER** para comenzar a grabar.
+4. Mientras se graba, verás un **medidor de volumen en tiempo real**.
+5. La grabación se detendrá automáticamente si:
 
-## Preparación de audio (consejos)
+    - Detecta las frases en la variable STOP_PHRASES
+    - Presionas **ENTER**
 
--   Graba o exporta en WAV o FLAC para mejor calidad.
--   Eliminar silencios largos y reducir ruido mejora la precisión.
--   Mantener una frecuencia de muestreo consistente (por ejemplo, 16 kHz o 44.1 kHz).
-
-## Formato de salida
-
-El resultado por defecto es un archivo de texto plano con la transcripción completa. Se pueden añadir opciones para obtener subtítulos (`.srt`) o JSON con timestamps.
-
-## Contribuir
-
-Si quieres colaborar:
-
--   Abre un issue describiendo la mejora o bug.
--   Envía un PR con cambios claros y pruebas cuando aplique.
-
-## Licencia
-
-Por defecto, no se especifica una licencia en este repositorio. Añade un archivo `LICENSE` con la licencia deseada (por ejemplo, MIT) si quieres permitir el uso público.
+6. Al detenerse, se reproducirá un **beep de confirmación**.
+7. Se generará un archivo **MP3** con el audio y un **TXT** con la transcripción.
 
 ---
 
-Si quieres, puedo:
+## 🔧 Configuración
 
--   Añadir ejemplos concretos de comandos según las dependencias instaladas.
--   Implementar un CLI básico en `script.py` y documentarlo aquí.
+Dentro del script se pueden ajustar:
+
+| Parámetro        | Descripción                                         |
+| ---------------- | --------------------------------------------------- |
+| `KEYNAME`        | Nombre parcial del micrófono a usar                 |
+| `STOP_PHRASES`   | Frases que detienen la grabación                    |
+| `BLOCK_DURATION` | Duración de cada bloque de audio para detección (s) |
+| `BAR_LENGTH`     | Longitud de la barra del medidor de volumen         |
+| `TIME_FORMAT`    | Formato de la carpeta de salida con timestamp       |
+
+---
+
+## 📂 Salida
+
+-   Carpeta creada automáticamente con **timestamp**: `YYYYMMDD_HHMMSS`
+-   Archivos generados:
+
+    -   `recording.mp3` → audio final
+    -   `transcription.txt` → transcripción del audio completo
+
+---
+
+## ⚡ Notas
+
+-   La transcripción se hace con **Whisper modelo “small”** para la detección de la frase, y puede cambiarse al modelo deseado.
+-   El script mantiene compatibilidad con **múltiples dispositivos de audio**.
+-   Se recomienda usar **micrófonos con buena sensibilidad** y ambiente silencioso para detección precisa de la frase.
+
+---

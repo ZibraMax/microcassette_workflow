@@ -11,8 +11,16 @@ import sys
 import tempfile
 import unicodedata
 import threading
-
-STOP_PHRASE = "fin del dia"
+STOP_PHRASES = [
+    "fin del dia",       # principal
+    "finalizar grabacion",
+    "stop recording",    # en inglés, útil si alguien lo dice
+    "end of day",
+    "grabar terminado",
+    "listo el pollo",
+    "ok termina",
+    "detener grabacion"
+]
 BLOCK_DURATION = 5
 TIME_FORMAT = "%Y%m%d_%H%M%S"
 FOLDER = "Transcripcion_" + time.strftime(TIME_FORMAT)
@@ -118,10 +126,12 @@ def record_until_phrase(filename):
             text = result["text"].lower()
             print(f"\nBloque detectado: {text.strip()}")
             full_text += " " + text
-            if STOP_PHRASE in strip_accents(full_text):
-                print("\n🛑 Frase detectada. Deteniendo grabación.")
-                stop_flag["stop"] = True
-                break
+            for stop_phrase in STOP_PHRASES:
+                if stop_phrase in strip_accents(full_text):
+                    print("🛑 Frase detectada:", stop_phrase)
+                    stop_flag["stop"] = True
+                    play_beep()
+                    break
     play_beep(duration=3)
     print("\n⏹️ Grabación finalizada.")
 
