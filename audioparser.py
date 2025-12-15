@@ -33,8 +33,9 @@ except Exception as e:
 CHANNELS = 1
 AUDIO_FILE = "recording.mp3"
 OUTPUT_TXT = "transcription.txt"
-LANGUAGUE = None
+LANGUAGUE = 'es'
 BAR_LENGTH = 20
+EMPTY_DETECTION = True
 
 
 def play_beep(frequency=1000, duration=0.3, sample_rate=44100):
@@ -130,6 +131,11 @@ def record_until_phrase(filename):
                     stop_flag["stop"] = True
                     play_beep()
                     break
+            if EMPTY_DETECTION and text.strip() == "":
+                print("⚠️ Bloque vacío detectado, deteniendo grabación.")
+                stop_flag["stop"] = True
+                play_beep()
+                break
     play_beep(duration=3)
     print("\n⏹️ Grabación finalizada.")
 
