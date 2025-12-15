@@ -33,7 +33,7 @@ except Exception as e:
 CHANNELS = 1
 AUDIO_FILE = "recording.mp3"
 OUTPUT_TXT = "transcription.txt"
-
+LANGUAGUE = None
 BAR_LENGTH = 20
 
 
@@ -119,7 +119,7 @@ def record_until_phrase(filename):
             write(tmp_wav, SAMPLE_RATE, audio_int16)
 
             # Transcribir solo el bloque
-            result = model.transcribe(tmp_wav, language="es", fp16=False)
+            result = model.transcribe(tmp_wav, language=LANGUAGUE, fp16=False)
             os.remove(tmp_wav)
             text = result["text"].lower()
             print(f"\nBloque detectado: {text.strip()}")
@@ -172,7 +172,7 @@ def record_until_enter(filename):
     print(f"✅ Audio guardado en {filename}")
 
 
-def transcribe_audio(audio_path, output_txt="transcription.txt", model_size="base", language="es"):
+def transcribe_audio(audio_path, output_txt="transcription.txt", model_size="base", language=LANGUAGUE):
     audio_path = Path(audio_path)
     if not audio_path.exists():
         raise FileNotFoundError(f"Audio file not found: {audio_path}")
